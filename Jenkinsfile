@@ -16,15 +16,16 @@ pipeline {
             steps {
               checkout scm
             }
+            sh 'ls'
         }
         stage('Terraform Init') {
             steps {
-                sh 'terraform init -backend=true -input-false'
+                sh 'terraform init'
             }
         }
         stage('Terraform Plan') {
             steps {
-                sh 'terraform plan -out=tfplan -input=false'
+                sh 'terraform plan'
                 script {
                   timeout(time: 10, unit: 'MINUTES') {
                     input(id: "Deploy Gate", message: "Deploy ${params.project_name}?", ok: 'Deploy')
@@ -34,7 +35,7 @@ pipeline {
         }
         stage('Terraform Apply') {
             steps {
-                sh 'terraform apply -lock=false -input=false tfplan'
+                sh 'terraform apply'
             }
         }
     }
