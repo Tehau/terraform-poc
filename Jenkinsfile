@@ -14,9 +14,9 @@ pipeline {
         }
         stage('Checkout Terraform file') {
             steps {
-              checkout scm
+                checkout scm
+                sh 'ls'
             }
-            sh 'ls'
         }
         stage('Terraform Init') {
             steps {
