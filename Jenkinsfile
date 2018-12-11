@@ -1,37 +1,33 @@
 pipeline {
-    agent {
-        node {
-            label 'master'
-        }
-    }
-    environment {
-        TERRAFORM_CMD = 'docker run --network host " -w /app -v ${HOME}/.aws:/root/.aws -v ${HOME}/.ssh:/root/.ssh -v `pwd`:/app hashicorp/terraform:light'
-    }
+    agent any
     stages {
-        stage('checkout repo') {
+        stage('Initialize'){
+            def dockerHome = tool 'docker'
+            def terraformHome  = tool 'terraform'
+            env.PATH = "${dockerHome}/bin:${terraformHome}/bin:${env.PATH}"
+        }
+        stage('Initialize') {
             steps {
-              checkout scm
+                script {
+                    def dockerHome = tool 'docker'
+                    def terraformHome = tool name: 'terraform'
+                    env.PATH = "${dockerHome}/bin:${terraformHome}:${env.PATH}"
+                }
+                sh 'terraform -version'
+                sh 'docker --version'
             }
         }
-        stage('pull latest light terraform image') {
-            steps {
-                sh  """
-                    docker pull hashicorp/terraform:light
-                    """
-            }
-        }
-        stage('init') {
+        stage('Terraform Init') {
             steps {
                 sh  """
                     ${TERRAFORM_CMD} init -backend=true -input=false
                     """
+                sh 'terraform init -backend=true -input-false'
             }
         }
-        stage('plan') {
+        stage('Terraform Plan') {
             steps {
-                sh  """
-                    ${TERRAFORM_CMD} plan -out=tfplan -input=false 
-                    """
+                sh 'terraform plan -out=tfplan -input=false'
                 script {
                   timeout(time: 10, unit: 'MINUTES') {
                     input(id: "Deploy Gate", message: "Deploy ${params.project_name}?", ok: 'Deploy')
@@ -39,11 +35,9 @@ pipeline {
                 }
             }
         }
-        stage('apply') {
+        stage('Terraform Apply') {
             steps {
-                sh  """
-                    ${TERRAFORM_CMD} apply -lock=false -input=false tfplan
-                    """
+                sh 'terraform apply -lock=false -input=false tfplan'
             }
         }
     }
