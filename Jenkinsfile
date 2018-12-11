@@ -23,16 +23,18 @@ pipeline {
                 sh 'terraform init'
             }
         }
+        /*
         stage('Terraform Plan') {
             steps {
                 sh 'terraform plan'
                 script {
-                  timeout(time: 10, unit: 'MINUTES') {
-                    input(id: "Deploy Gate", message: "Deploy ${params.project_name}?", ok: 'Deploy')
-                  }
+                    timeout(time: 10, unit: 'MINUTES') {
+                        input(id: "Deploy Gate", message: "Deploy ${params.project_name}?", ok: 'Deploy')
+                    }
                 }
             }
         }
+        */
         stage('Terraform Apply') {
             steps {
                 sh 'terraform apply'
