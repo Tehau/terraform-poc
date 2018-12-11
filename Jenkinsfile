@@ -1,11 +1,6 @@
 pipeline {
     agent any
     stages {
-        stage('Initialize'){
-            def dockerHome = tool 'docker'
-            def terraformHome  = tool 'terraform'
-            env.PATH = "${dockerHome}/bin:${terraformHome}/bin:${env.PATH}"
-        }
         stage('Initialize') {
             steps {
                 script {
