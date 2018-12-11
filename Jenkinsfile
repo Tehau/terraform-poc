@@ -12,6 +12,11 @@ pipeline {
                 sh 'docker --version'
             }
         }
+        stage('Checkout Terraform file') {
+            steps {
+              checkout scm
+            }
+        }
         stage('Terraform Init') {
             steps {
                 sh 'terraform init -backend=true -input-false'
