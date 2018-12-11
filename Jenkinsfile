@@ -14,9 +14,6 @@ pipeline {
         }
         stage('Terraform Init') {
             steps {
-                sh  """
-                    ${TERRAFORM_CMD} init -backend=true -input=false
-                    """
                 sh 'terraform init -backend=true -input-false'
             }
         }
