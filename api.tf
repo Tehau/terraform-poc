@@ -1,5 +1,5 @@
 data "http" "example" {
-  url = "https://jsonplaceholder.typicode.com/posts"
+  url = "https://jsonplaceholder.typicode.com/posts/1"
   #url = "https://api.github.com/" #401
   
   # Optional request headers
